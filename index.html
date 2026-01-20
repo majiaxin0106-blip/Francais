@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Français">
+    <meta name="theme-color" content="#B9A3FF">
+    <title>Français - 法语学习</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>🇫🇷 Français</h1>
+            </div>
+            <div class="header-right">
+                <!-- Streak Display -->
+                <div class="streak-display" id="streakDisplay">
+                    <span class="fire-icon" id="fireIcon">🔥</span>
+                    <span class="streak-count" id="streakCount">0</span>
+                </div>
+                <!-- Level Switcher -->
+                <div class="level-badge" id="currentLevelBadge">A1</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome/Level Selection Screen -->
+            <div id="welcomeScreen" class="screen active">
+                <div class="welcome-card">
+                    <h2>Bienvenue! 👋</h2>
+                    <p>选择您的法语水平开始学习</p>
+                    <div class="level-selector">
+                        <button class="level-btn" data-level="A1">
+                            <span class="level-emoji">🌱</span>
+                            <span>A1 初学者</span>
+                        </button>
+                        <button class="level-btn" data-level="A2">
+                            <span class="level-emoji">🌿</span>
+                            <span>A2 入门</span>
+                        </button>
+                        <button class="level-btn" data-level="B1">
+                            <span class="level-emoji">🌳</span>
+                            <span>B1 中级</span>
+                        </button>
+                        <button class="level-btn" data-level="B2">
+                            <span class="level-emoji">🏆</span>
+                            <span>B2 中高级</span>
+                        </button>
+                        <button class="level-btn" data-level="C1">
+                            <span class="level-emoji">⭐</span>
+                            <span>C1 高级</span>
+                        </button>
+                        <button class="level-btn" data-level="C2">
+                            <span class="level-emoji">👑</span>
+                            <span>C2 精通</span>
+                        </button>
+                    </div>
+                    <button class="skip-test-btn" id="skipTestBtn">📝 跳级测试</button>
+                </div>
+            </div>
+
+            <!-- Course System Screen -->
+            <div id="courseScreen" class="screen">
+                <div class="course-header">
+                    <h2>课程体系</h2>
+                    <button class="level-switch-btn" id="levelSwitchBtn">切换水平</button>
+                </div>
+                <div class="units-container" id="unitsContainer">
+                    <!-- Units will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Unit Detail Screen -->
+            <div id="unitScreen" class="screen">
+                <button class="back-btn">← 返回课程</button>
+                <div class="unit-detail" id="unitDetail">
+                    <!-- Unit details will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Grammar Practice Screen -->
+            <div id="grammarScreen" class="screen">
+                <div class="practice-card">
+                    <button class="back-btn">← 返回</button>
+                    <h2>语法练习</h2>
+                    <div id="grammarContent">
+                        <div class="question-card">
+                            <h3>动词变位练习</h3>
+                            <p class="question" id="grammarQuestion"></p>
+                            <div class="options" id="grammarOptions"></div>
+                            <button class="submit-btn" id="grammarSubmit" disabled>提交答案</button>
+                            <div class="result" id="grammarResult"></div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="grammarProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listening Practice Screen -->
+            <div id="listeningScreen" class="screen">
+                <div class="practice-card">
+                    <button class="back-btn">← 返回</button>
+                    <h2>听力练习</h2>
+                    <div id="listeningContent">
+                        <div class="audio-player">
+                            <button class="play-btn" id="playAudio">▶️ 播放音频</button>
+                            <p class="audio-text clickable" id="audioText" style="display: none;"></p>
+                        </div>
+                        <div class="question-card">
+                            <p class="question" id="listeningQuestion"></p>
+                            <div class="options" id="listeningOptions"></div>
+                            <button class="submit-btn" id="listeningSubmit" disabled>提交答案</button>
+                            <div class="result" id="listeningResult"></div>
+                            <button class="show-text-btn" id="showText">显示文本</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speaking Practice Screen -->
+            <div id="speakingScreen" class="screen">
+                <div class="practice-card">
+                    <button class="back-btn">← 返回</button>
+                    <h2>口语练习</h2>
+                    <div id="speakingContent">
+                        <div class="speaking-card">
+                            <p class="instruction">请朗读以下句子：</p>
+                            <p class="target-text clickable" id="targetText"></p>
+                            <p class="translation" id="targetTranslation"></p>
+                            <button class="record-btn" id="recordBtn">🎤 开始录音</button>
+                            <div class="recording-status" id="recordingStatus"></div>
+                            <div class="result" id="speakingResult"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mistake Notebook Screen -->
+            <div id="mistakeScreen" class="screen">
+                <div class="practice-card">
+                    <button class="back-btn">← 返回</button>
+                    <h2>📖 错题本</h2>
+                    <div id="mistakeList" class="mistake-list">
+                        <!-- Mistakes will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Screen -->
+            <div id="progressScreen" class="screen">
+                <div class="practice-card">
+                    <button class="back-btn">← 返回</button>
+                    <h2>学习进度</h2>
+
+                    <!-- Streak Calendar -->
+                    <div class="streak-calendar" id="streakCalendar">
+                        <h3>学习日历</h3>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-number" id="totalStreak">0</div>
+                            <div class="stat-label">连续天数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-number" id="totalSessions">0</div>
+                            <div class="stat-label">学习次数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-number" id="correctAnswers">0</div>
+                            <div class="stat-label">正确答案</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-number" id="accuracy">0%</div>
+                            <div class="stat-label">正确率</div>
+                        </div>
+                    </div>
+
+                    <!-- Study Reminder -->
+                    <div class="reminder-card">
+                        <h3>⏰ 学习提醒</h3>
+                        <p>设置每日学习提醒时间</p>
+                        <input type="time" id="reminderTime" value="20:00">
+                        <button class="submit-btn" id="setReminderBtn">设置提醒</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skip Level Test Screen -->
+            <div id="skipTestScreen" class="screen">
+                <div class="practice-card">
+                    <button class="back-btn">← 返回</button>
+                    <h2>📝 跳级测试</h2>
+                    <p class="test-intro">完成测试以评估您的法语水平</p>
+                    <div id="skipTestContent"></div>
+                    <button class="submit-btn" id="skipTestSubmit">提交测试</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-screen="course">
+                <span>📚</span>
+                <span>课程</span>
+            </button>
+            <button class="nav-btn" data-screen="mistake">
+                <span>📖</span>
+                <span>错题</span>
+            </button>
+            <button class="nav-btn" data-screen="progress">
+                <span>📊</span>
+                <span>进度</span>
+            </button>
+        </nav>
+
+        <!-- Word Lookup Modal -->
+        <div id="wordModal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" id="modalClose">×</button>
+                <h3 id="modalWord"></h3>
+                <div class="word-details" id="wordDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Français APP 图标预览 - 紫色小精灵 Oui</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #D8C8FF 0%, #B9A3FF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(121, 76, 255, 0.3);
+            max-width: 900px;
+        }
+        h1 {
+            text-align: center;
+            color: #794CFF;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .icon-preview {
+            text-align: center;
+        }
+        .icon-preview canvas {
+            border-radius: 22%;
+            box-shadow: 0 10px 30px rgba(121, 76, 255, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s;
+            width: 100%;
+            max-width: 256px;
+        }
+        .icon-preview canvas:hover {
+            transform: scale(1.05);
+        }
+        .icon-label {
+            margin-top: 15px;
+            font-weight: 700;
+            color: #794CFF;
+            font-size: 18px;
+        }
+        .icon-size {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .download-btn {
+            background: linear-gradient(90deg, #8B5CF6, #794CFF);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+            box-shadow: 0 4px 0 #6B3FE8;
+            transition: all 0.2s;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #6B3FE8;
+        }
+        .download-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #6B3FE8;
+        }
+        .info-box {
+            background: rgba(230, 230, 250, 0.5);
+            border-left: 4px solid #794CFF;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        .info-box h3 {
+            color: #794CFF;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💜 Français APP - Oui!</h1>
+        <p class="subtitle">紫色小精灵主题图标预览</p>
+
+        <div class="icon-grid">
+            <div class="icon-preview">
+                <canvas id="icon192" width="192" height="192"></canvas>
+                <div class="icon-label">标准图标</div>
+                <div class="icon-size">192×192</div>
+                <button class="download-btn" onclick="downloadIcon('icon192', 'icon-192.png')">💾 下载</button>
+            </div>
+            <div class="icon-preview">
+                <canvas id="icon512" width="512" height="512"></canvas>
+                <div class="icon-label">高清图标</div>
+                <div class="icon-size">512×512</div>
+                <button class="download-btn" onclick="downloadIcon('icon512', 'icon-512.png')">💾 下载</button>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>💜 紫色小精灵 "Oui" 图标设计</h3>
+            <p>🎨 <strong>简洁可爱</strong>：极简主义设计，一眼就能认出</p>
+            <p>💬 <strong>"Oui"对话框</strong>：法语的"是"，完美呼应法语学习主题</p>
+            <p>😊 <strong>友好表情</strong>：微笑的小精灵，让学习更轻松愉快</p>
+            <p>🌟 <strong>紫色主题</strong>：与APP界面配色完美统一</p>
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+
+            // Background - cream/beige color like the reference
+            ctx.fillStyle = '#F5F3F0';
+            const radius = size * 0.22;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const scale = size / 192;
+
+            // Draw the cute purple blob character
+            // Main body - light purple blob
+            ctx.fillStyle = '#C5B3DB';
+            ctx.beginPath();
+
+            // Create a cute blob shape using bezier curves
+            const blobRadius = 70 * scale;
+            const blobY = centerY + 10 * scale;
+
+            // Blob body (rounded bottom)
+            ctx.moveTo(centerX - blobRadius, blobY);
+            ctx.quadraticCurveTo(centerX - blobRadius * 1.2, blobY - blobRadius * 0.5, centerX - blobRadius * 0.8, blobY - blobRadius);
+            ctx.quadraticCurveTo(centerX, blobY - blobRadius * 1.3, centerX + blobRadius * 0.8, blobY - blobRadius);
+            ctx.quadraticCurveTo(centerX + blobRadius * 1.2, blobY - blobRadius * 0.5, centerX + blobRadius, blobY);
+            ctx.quadraticCurveTo(centerX + blobRadius, blobY + blobRadius, centerX, blobY + blobRadius * 1.1);
+            ctx.quadraticCurveTo(centerX - blobRadius, blobY + blobRadius, centerX - blobRadius, blobY);
+            ctx.closePath();
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#2C2C2C';
+            const eyeY = blobY - 20 * scale;
+            const eyeSize = 5 * scale;
+            const eyeSpacing = 18 * scale;
+
+            // Left eye
+            ctx.beginPath();
+            ctx.arc(centerX - eyeSpacing, eyeY, eyeSize, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Right eye
+            ctx.beginPath();
+            ctx.arc(centerX + eyeSpacing, eyeY, eyeSize, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Smile
+            ctx.strokeStyle = '#2C2C2C';
+            ctx.lineWidth = 3 * scale;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(centerX, blobY, 15 * scale, 0.3, Math.PI - 0.3);
+            ctx.stroke();
+
+            // Speech bubble "Oui"
+            const bubbleX = centerX + 45 * scale;
+            const bubbleY = centerY - 60 * scale;
+            const bubbleWidth = 50 * scale;
+            const bubbleHeight = 32 * scale;
+            const bubbleRadius = 16 * scale;
+
+            // Speech bubble background
+            ctx.fillStyle = '#8B73A8';
+            ctx.beginPath();
+            ctx.moveTo(bubbleX - bubbleWidth/2 + bubbleRadius, bubbleY - bubbleHeight/2);
+            ctx.lineTo(bubbleX + bubbleWidth/2 - bubbleRadius, bubbleY - bubbleHeight/2);
+            ctx.quadraticCurveTo(bubbleX + bubbleWidth/2, bubbleY - bubbleHeight/2, bubbleX + bubbleWidth/2, bubbleY - bubbleHeight/2 + bubbleRadius);
+            ctx.lineTo(bubbleX + bubbleWidth/2, bubbleY + bubbleHeight/2 - bubbleRadius);
+            ctx.quadraticCurveTo(bubbleX + bubbleWidth/2, bubbleY + bubbleHeight/2, bubbleX + bubbleWidth/2 - bubbleRadius, bubbleY + bubbleHeight/2);
+            ctx.lineTo(bubbleX - bubbleWidth/2 + bubbleRadius, bubbleY + bubbleHeight/2);
+            ctx.quadraticCurveTo(bubbleX - bubbleWidth/2, bubbleY + bubbleHeight/2, bubbleX - bubbleWidth/2, bubbleY + bubbleHeight/2 - bubbleRadius);
+            ctx.lineTo(bubbleX - bubbleWidth/2, bubbleY - bubbleHeight/2 + bubbleRadius);
+            ctx.quadraticCurveTo(bubbleX - bubbleWidth/2, bubbleY - bubbleHeight/2, bubbleX - bubbleWidth/2 + bubbleRadius, bubbleY - bubbleHeight/2);
+            ctx.closePath();
+            ctx.fill();
+
+            // Speech bubble tail
+            ctx.beginPath();
+            ctx.moveTo(bubbleX - 15 * scale, bubbleY + bubbleHeight/2);
+            ctx.lineTo(bubbleX - 25 * scale, bubbleY + bubbleHeight/2 + 15 * scale);
+            ctx.lineTo(bubbleX - 5 * scale, bubbleY + bubbleHeight/2);
+            ctx.closePath();
+            ctx.fill();
+
+            // "Oui" text
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${18 * scale}px Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Oui', bubbleX, bubbleY);
+
+            // Small dot decoration
+            ctx.fillStyle = '#8B73A8';
+            ctx.beginPath();
+            ctx.arc(bubbleX + bubbleWidth/2 + 8 * scale, bubbleY - bubbleHeight/2 - 8 * scale, 3 * scale, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Draw icons on load
+        drawIcon('icon192', 192);
+        drawIcon('icon512', 512);
+    </script>
+</body>
+</html>

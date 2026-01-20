@@ -1,0 +1,12 @@
+# Backup files
+*.backup
+
+# macOS
+.DS_Store
+
+# Temporary files
+hotspot-setup.txt
+test.html
+
+# Development files
+IMPROVEMENTS.md

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Français APP - 上传图片生成图标</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #D8C8FF 0%, #B9A3FF 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(121, 76, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #794CFF;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .upload-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .upload-area {
+            border: 3px dashed #B9A3FF;
+            border-radius: 16px;
+            padding: 60px 40px;
+            background: rgba(230, 230, 250, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: #794CFF;
+            background: rgba(230, 230, 250, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #794CFF;
+            background: rgba(139, 92, 246, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #794CFF;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            font-size: 14px;
+            color: #999;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview-section {
+            display: none;
+            margin-bottom: 40px;
+        }
+
+        .preview-section.show {
+            display: block;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .preview-item {
+            text-align: center;
+        }
+
+        .preview-canvas {
+            width: 100%;
+            max-width: 256px;
+            border-radius: 22%;
+            box-shadow: 0 10px 30px rgba(121, 76, 255, 0.3);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .preview-label {
+            margin-top: 15px;
+            font-weight: 700;
+            color: #794CFF;
+            font-size: 18px;
+        }
+
+        .preview-size {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .download-btn {
+            background: linear-gradient(90deg, #8B5CF6, #794CFF);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+            box-shadow: 0 4px 0 #6B3FE8;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #6B3FE8;
+        }
+
+        .download-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #6B3FE8;
+        }
+
+        .reset-btn {
+            background: #E5E5E5;
+            color: #666;
+            box-shadow: 0 4px 0 #D0D0D0;
+        }
+
+        .reset-btn:hover {
+            background: #D5D5D5;
+            box-shadow: 0 6px 0 #D0D0D0;
+        }
+
+        .reset-btn:active {
+            box-shadow: 0 2px 0 #D0D0D0;
+        }
+
+        .options-section {
+            background: rgba(230, 230, 250, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .options-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #794CFF;
+            margin-bottom: 20px;
+        }
+
+        .option-group {
+            margin-bottom: 20px;
+        }
+
+        .option-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .option-control {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #E5E5E5;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #794CFF;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #794CFF;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            color: #794CFF;
+            font-size: 16px;
+        }
+
+        .info-box {
+            background: rgba(255, 235, 215, 0.5);
+            border-left: 4px solid #794CFF;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .info-box h3 {
+            color: #794CFF;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Français APP 图标生成器</h1>
+        <p class="subtitle">上传您的图片，自动生成适配 iOS 的应用图标</p>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">点击或拖拽图片到这里</div>
+                <div class="upload-hint">支持 JPG、PNG、GIF 格式</div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <!-- Options Section -->
+        <div class="options-section" id="optionsSection" style="display: none;">
+            <div class="options-title">⚙️ 图标调整</div>
+
+            <div class="option-group">
+                <label class="option-label">缩放比例</label>
+                <div class="option-control">
+                    <input type="range" id="scaleSlider" min="50" max="150" value="100" step="1">
+                    <span class="value-display" id="scaleValue">100%</span>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label class="option-label">水平位置</label>
+                <div class="option-control">
+                    <input type="range" id="offsetXSlider" min="-50" max="50" value="0" step="1">
+                    <span class="value-display" id="offsetXValue">0</span>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label class="option-label">垂直位置</label>
+                <div class="option-control">
+                    <input type="range" id="offsetYSlider" min="-50" max="50" value="0" step="1">
+                    <span class="value-display" id="offsetYValue">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="preview-grid">
+                <div class="preview-item">
+                    <canvas id="icon192" width="192" height="192" class="preview-canvas"></canvas>
+                    <div class="preview-label">标准图标</div>
+                    <div class="preview-size">192×192</div>
+                    <button class="download-btn" onclick="downloadIcon('icon192', 'icon-192.png')">💾 下载</button>
+                </div>
+                <div class="preview-item">
+                    <canvas id="icon512" width="512" height="512" class="preview-canvas"></canvas>
+                    <div class="preview-label">高清图标</div>
+                    <div class="preview-size">512×512</div>
+                    <button class="download-btn" onclick="downloadIcon('icon512', 'icon-512.png')">💾 下载</button>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="download-btn reset-btn" onclick="resetUpload()">🔄 重新上传</button>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>📝 使用说明</h3>
+            <p>1️⃣ <strong>上传图片</strong>：点击上传区域或拖拽图片文件</p>
+            <p>2️⃣ <strong>调整位置</strong>：使用滑块调整图片的缩放和位置</p>
+            <p>3️⃣ <strong>下载图标</strong>：点击下载按钮保存生成的图标</p>
+            <p>4️⃣ <strong>安装使用</strong>：将生成的图标替换到项目中即可</p>
+            <p>💡 <strong>提示</strong>：建议使用正方形图片，效果最佳！</p>
+        </div>
+    </div>
+
+    <script>
+        let uploadedImage = null;
+        let scale = 100;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewSection = document.getElementById('previewSection');
+        const optionsSection = document.getElementById('optionsSection');
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleImageUpload(file);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageUpload(file);
+            }
+        });
+
+        // Sliders
+        document.getElementById('scaleSlider').addEventListener('input', (e) => {
+            scale = e.target.value;
+            document.getElementById('scaleValue').textContent = scale + '%';
+            drawIcons();
+        });
+
+        document.getElementById('offsetXSlider').addEventListener('input', (e) => {
+            offsetX = e.target.value;
+            document.getElementById('offsetXValue').textContent = offsetX;
+            drawIcons();
+        });
+
+        document.getElementById('offsetYSlider').addEventListener('input', (e) => {
+            offsetY = e.target.value;
+            document.getElementById('offsetYValue').textContent = offsetY;
+            drawIcons();
+        });
+
+        function handleImageUpload(file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    uploadedImage = img;
+                    previewSection.classList.add('show');
+                    optionsSection.style.display = 'block';
+                    drawIcons();
+                };
+                img.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function drawIcons() {
+            if (!uploadedImage) return;
+
+            drawIcon('icon192', 192);
+            drawIcon('icon512', 512);
+        }
+
+        function drawIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+
+            // Draw rounded rectangle background
+            const radius = size * 0.22;
+            ctx.fillStyle = '#F5F3F0';
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // Apply clipping for rounded corners
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.clip();
+
+            // Calculate dimensions
+            const imgScale = scale / 100;
+            const imgSize = Math.max(uploadedImage.width, uploadedImage.height);
+            const scaledSize = size * imgScale;
+            const drawSize = (scaledSize / imgSize) * Math.min(uploadedImage.width, uploadedImage.height);
+
+            // Calculate position with offset
+            const x = (size - drawSize) / 2 + (offsetX * size / 100);
+            const y = (size - drawSize) / 2 + (offsetY * size / 100);
+
+            // Draw image
+            ctx.drawImage(uploadedImage, x, y, drawSize, drawSize);
+
+            ctx.restore();
+        }
+
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function resetUpload() {
+            uploadedImage = null;
+            fileInput.value = '';
+            previewSection.classList.remove('show');
+            optionsSection.style.display = 'none';
+            scale = 100;
+            offsetX = 0;
+            offsetY = 0;
+            document.getElementById('scaleSlider').value = 100;
+            document.getElementById('offsetXSlider').value = 0;
+            document.getElementById('offsetYSlider').value = 0;
+            document.getElementById('scaleValue').textContent = '100%';
+            document.getElementById('offsetXValue').textContent = '0';
+            document.getElementById('offsetYValue').textContent = '0';
+        }
+    </script>
+</body>
+</html>

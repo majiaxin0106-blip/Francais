@@ -1,0 +1,12 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#4A90E2" rx="100"/>
+
+  <!-- French Flag Colors -->
+  <rect x="106" y="160" width="80" height="192" fill="#0055A4"/>
+  <rect x="186" y="160" width="80" height="192" fill="#FFFFFF"/>
+  <rect x="266" y="160" width="80" height="192" fill="#EF4135"/>
+
+  <!-- Text -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="white" text-anchor="middle">FR</text>
+</svg>
