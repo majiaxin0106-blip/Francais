@@ -8,8 +8,12 @@
     <meta name="apple-mobile-web-app-title" content="Français">
     <meta name="theme-color" content="#B9A3FF">
     <title>Français - 法语学习</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -165,6 +169,20 @@
                     <!-- Streak Calendar -->
                     <div class="streak-calendar" id="streakCalendar">
                         <h3>学习日历</h3>
+                        <div class="calendar-header">
+                            <button class="calendar-nav-btn" id="prevMonth">◀</button>
+                            <div class="calendar-title" id="calendarTitle">2024年1月</div>
+                            <button class="calendar-nav-btn" id="nextMonth">▶</button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div>一</div>
+                            <div>二</div>
+                            <div>三</div>
+                            <div>四</div>
+                            <div>五</div>
+                            <div>六</div>
+                            <div>日</div>
+                        </div>
                         <div class="calendar-grid" id="calendarGrid"></div>
                     </div>
 

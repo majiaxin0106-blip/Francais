@@ -559,6 +559,59 @@ body {
     font-weight: 700;
 }
 
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 8px;
+}
+
+.calendar-nav-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-nav-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.calendar-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.calendar-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.calendar-weekdays > div {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 4px;
+}
+
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -569,11 +622,44 @@ body {
     aspect-ratio: 1;
     border-radius: 8px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
     background: #F7F7F7;
-    border: 2px solid var(--border-color);
+    border: 2px solid #E5E5E5;
+    position: relative;
+    padding: 4px;
+}
+
+.calendar-day.empty {
+    background: transparent;
+    border: none;
+}
+
+.calendar-day.today {
+    border-color: var(--primary-color);
+    background: rgba(121, 76, 255, 0.1);
+}
+
+.calendar-day.has-study {
+    background: rgba(255, 150, 0, 0.1);
+    border-color: var(--streak-fire);
+}
+
+.calendar-day.future {
+    opacity: 0.3;
+}
+
+.calendar-date-num {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.calendar-fire {
+    font-size: 16px;
+    position: absolute;
+    bottom: 2px;
 }
 
 .calendar-day.active {
@@ -596,7 +682,7 @@ body {
 
 .stat-card {
     background: white;
-    padding: 24px;
+    padding: 20px;
     border-radius: 16px;
     text-align: center;
     box-shadow: var(--shadow);
@@ -604,19 +690,19 @@ body {
 }
 
 .stat-icon {
-    font-size: 32px;
-    margin-bottom: 8px;
+    font-size: 28px;
+    margin-bottom: 6px;
 }
 
 .stat-number {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 800;
     color: var(--primary-color);
     margin-bottom: 4px;
 }
 
 .stat-label {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-secondary);
     font-weight: 600;
 }
@@ -772,11 +858,29 @@ body {
 
 /* Responsive */
 @media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
     .lessons-grid {
         grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+
+    /* 保持统计信息为2x2布局 */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-card {
+        padding: 16px 12px;
+    }
+
+    .stat-icon {
+        font-size: 24px;
+        margin-bottom: 4px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+    }
+
+    .stat-label {
+        font-size: 12px;
     }
 }

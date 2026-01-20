@@ -15,7 +15,8 @@ const state = {
     mistakes: [], // Store mistakes for review
     unitProgress: {}, // Track completion of units and lessons
     grammarProgress: 0,
-    currentQuestionIndex: 0
+    currentQuestionIndex: 0,
+    calendarViewDate: new Date() // 新增：日历当前查看的年月
 };
 
 // Course System Data
@@ -318,6 +319,17 @@ function initializeApp() {
 
     // Reminder set button
     document.getElementById('setReminderBtn')?.addEventListener('click', setStudyReminder);
+
+    // Calendar navigation buttons
+    document.getElementById('prevMonth')?.addEventListener('click', () => {
+        state.calendarViewDate.setMonth(state.calendarViewDate.getMonth() - 1);
+        renderStreakCalendar();
+    });
+
+    document.getElementById('nextMonth')?.addEventListener('click', () => {
+        state.calendarViewDate.setMonth(state.calendarViewDate.getMonth() + 1);
+        renderStreakCalendar();
+    });
 }
 
 // Screen Navigation
@@ -905,28 +917,70 @@ function renderProgressScreen() {
 
 function renderStreakCalendar() {
     const container = document.getElementById('calendarGrid');
-    if (!container) return;
+    const titleEl = document.getElementById('calendarTitle');
+    if (!container || !titleEl) return;
 
     container.innerHTML = '';
 
-    // Show last 28 days (4 weeks)
-    const today = new Date();
-    const studyDates = state.stats.studyDates || [];
+    const viewDate = state.calendarViewDate;
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
 
-    for (let i = 27; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
+    // 更新标题
+    titleEl.textContent = `${year}年${month + 1}月`;
+
+    // 获取当月第一天和最后一天
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+
+    // 获取当月第一天是星期几（0=周日，1=周一，...）
+    let firstDayOfWeek = firstDay.getDay();
+    // 转换为周一开始（0=周一，6=周日）
+    firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+
+    const studyDates = state.stats.studyDates || [];
+    const today = new Date();
+
+    // 添加空白占位
+    for (let i = 0; i < firstDayOfWeek; i++) {
+        const emptyEl = document.createElement('div');
+        emptyEl.className = 'calendar-day empty';
+        container.appendChild(emptyEl);
+    }
+
+    // 添加日期
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
         const dateStr = date.toDateString();
+        const isToday = date.toDateString() === today.toDateString();
+        const hasStudied = studyDates.includes(dateStr);
 
         const dayEl = document.createElement('div');
         dayEl.className = 'calendar-day';
 
-        if (studyDates.includes(dateStr)) {
-            dayEl.classList.add('active');
-            dayEl.textContent = '🔥';
-        } else {
-            dayEl.classList.add('dimmed');
-            dayEl.textContent = '⚪';
+        // 日期数字
+        const dateNum = document.createElement('div');
+        dateNum.className = 'calendar-date-num';
+        dateNum.textContent = day;
+        dayEl.appendChild(dateNum);
+
+        // 学习标记（火花）
+        if (hasStudied) {
+            const fireEl = document.createElement('div');
+            fireEl.className = 'calendar-fire';
+            fireEl.textContent = '🔥';
+            dayEl.appendChild(fireEl);
+            dayEl.classList.add('has-study');
+        }
+
+        if (isToday) {
+            dayEl.classList.add('today');
+        }
+
+        // 未来日期灰化
+        if (date > today) {
+            dayEl.classList.add('future');
         }
 
         container.appendChild(dayEl);
