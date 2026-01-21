@@ -67,7 +67,7 @@
                             <span>C2 精通</span>
                         </button>
                     </div>
-                    <button class="skip-test-btn" id="skipTestBtn">📝 跳级测试</button>
+                    <button class="skip-test-btn" id="skipTestBtn">📝 等级测试</button>
                 </div>
             </div>
 
@@ -220,14 +220,31 @@
                 </div>
             </div>
 
-            <!-- Skip Level Test Screen -->
+            <!-- Level Test Screen -->
             <div id="skipTestScreen" class="screen">
                 <div class="practice-card">
                     <button class="back-btn">← 返回</button>
-                    <h2>📝 跳级测试</h2>
-                    <p class="test-intro">完成测试以评估您的法语水平</p>
+                    <h2>📝 法语等级测试</h2>
+                    <p class="test-intro">完成10道题，评估您的法语水平和词汇量</p>
                     <div id="skipTestContent"></div>
                     <button class="submit-btn" id="skipTestSubmit">提交测试</button>
+                    <div id="testResultSection" class="test-result-section" style="display: none;">
+                        <h3>测试结果</h3>
+                        <div class="test-result-cards">
+                            <div class="test-result-card">
+                                <div class="result-icon">🏆</div>
+                                <div class="result-label">您的等级</div>
+                                <div class="result-value" id="testLevelResult">A1</div>
+                            </div>
+                            <div class="test-result-card">
+                                <div class="result-icon">📚</div>
+                                <div class="result-label">词汇量</div>
+                                <div class="result-value" id="testVocabResult">500</div>
+                            </div>
+                        </div>
+                        <div class="test-description" id="testDescription"></div>
+                        <button class="submit-btn" onclick="switchScreen('course'); renderCourseSystem();">开始学习</button>
+                    </div>
                 </div>
             </div>
         </main>

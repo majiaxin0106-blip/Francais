@@ -242,6 +242,7 @@ function initializeApp() {
     // Skip test button
     document.getElementById('skipTestBtn')?.addEventListener('click', () => {
         switchScreen('skipTest');
+        initLevelTest();
     });
 
     // Level switch button
@@ -539,11 +540,12 @@ function loadGrammarQuestion() {
             saveState();
         }
 
-        // Go back to course
-        setTimeout(() => {
-            switchScreen('course');
-            renderCourseSystem();
-        }, 1500);
+        // Show completion message and reset
+        const resultDiv = document.getElementById('grammarResult');
+        resultDiv.className = 'result show correct';
+        resultDiv.innerHTML = '🎉 恭喜完成本轮练习！<br><button class="submit-btn" onclick="location.reload()" style="margin-top: 12px;">继续练习</button>';
+
+        document.getElementById('grammarSubmit').style.display = 'none';
         return;
     }
 
@@ -710,7 +712,12 @@ function checkListeningAnswer() {
     // Show result
     const resultDiv = document.getElementById('listeningResult');
     resultDiv.className = 'result show ' + (isCorrect ? 'correct' : 'incorrect');
-    resultDiv.textContent = isCorrect ? '✅ 正确！' : '❌ 错误，正确答案是：' + currentListeningQuestion.options[currentListeningQuestion.correct];
+
+    if (isCorrect) {
+        resultDiv.innerHTML = '✅ 正确！<br><button class="submit-btn" onclick="loadListeningQuestion(); this.parentElement.classList.remove(\'show\');" style="margin-top: 12px;">下一题</button>';
+    } else {
+        resultDiv.innerHTML = `❌ 错误，正确答案是：${currentListeningQuestion.options[currentListeningQuestion.correct]}<br><button class="submit-btn" onclick="loadListeningQuestion(); this.parentElement.classList.remove('show');" style="margin-top: 12px;">下一题</button>`;
+    }
 
     // Highlight correct/incorrect
     document.querySelectorAll('#listeningOptions .option-btn').forEach((btn, index) => {
@@ -722,17 +729,14 @@ function checkListeningAnswer() {
         btn.style.pointerEvents = 'none';
     });
 
-    // Mark lesson complete and go back
+    // Mark lesson complete
     if (state.currentUnit && state.currentLesson) {
         const lessonId = `${state.currentUnit}-L${state.currentLesson}`;
         state.unitProgress[lessonId] = true;
         saveState();
     }
 
-    setTimeout(() => {
-        switchScreen('course');
-        renderCourseSystem();
-    }, 2500);
+    document.getElementById('listeningSubmit').disabled = true;
 }
 
 // Speaking Practice
@@ -1007,6 +1011,121 @@ function showWordModal(text) {
             <p style="color: #666; font-size: 14px; margin-top: 10px;">提示：点击法语文本可查看详细信息</p>
         `;
     }, 500);
+}
+
+// Level Test
+const levelTestQuestions = [
+    { question: "Comment allez-vous?", options: ["How are you?", "Where are you?", "What's your name?", "Goodbye"], correct: 0, level: "A1" },
+    { question: "Je ___ français.", options: ["parle", "parles", "parlons", "parlent"], correct: 0, level: "A1" },
+    { question: "Quelle heure est-il?", options: ["What day is it?", "What time is it?", "How old are you?", "What's the weather?"], correct: 1, level: "A1" },
+    { question: "Il ___ au cinéma hier.", options: ["va", "aller", "est allé", "allait"], correct: 2, level: "A2" },
+    { question: "Si j'avais le temps, je ___ plus.", options: ["lirais", "lis", "lirai", "lu"], correct: 0, level: "B1" },
+    { question: "Bien que ce ___ difficile, nous avons réussi.", options: ["soit", "est", "sera", "était"], correct: 0, level: "B2" },
+    { question: "Le subjonctif imparfait de 'être' à la 3e personne du singulier:", options: ["qu'il fût", "qu'il soit", "qu'il serait", "qu'il était"], correct: 0, level: "C1" },
+    { question: "Qu'est-ce que 'la Francophonie'?", options: ["French food", "French-speaking countries", "French history", "French literature"], correct: 1, level: "A2" },
+    { question: "Le mot 'soutenir' signifie:", options: ["support", "remember", "forget", "prevent"], correct: 0, level: "B1" },
+    { question: "Quelle est la forme passive de 'Il a écrit une lettre'?", options: ["Une lettre a été écrite", "Une lettre est écrite", "Une lettre écrit", "Il écrit une lettre"], correct: 0, level: "B2" }
+];
+
+let testAnswers = [];
+
+function initLevelTest() {
+    testAnswers = [];
+    const content = document.getElementById('skipTestContent');
+    const submitBtn = document.getElementById('skipTestSubmit');
+    const resultSection = document.getElementById('testResultSection');
+
+    content.innerHTML = '';
+    submitBtn.style.display = 'block';
+    resultSection.style.display = 'none';
+
+    levelTestQuestions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question-card';
+        questionDiv.innerHTML = `
+            <h3>题目 ${index + 1}</h3>
+            <p class="question">${q.question}</p>
+            <div class="options" id="testOptions${index}">
+                ${q.options.map((opt, i) => `
+                    <button class="option-btn" data-qindex="${index}" data-index="${i}">${opt}</button>
+                `).join('')}
+            </div>
+        `;
+        content.appendChild(questionDiv);
+    });
+
+    // Add click handlers
+    content.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const qIndex = parseInt(e.target.dataset.qindex);
+            const optIndex = parseInt(e.target.dataset.index);
+
+            // Deselect others in same question
+            content.querySelectorAll(`[data-qindex="${qIndex}"]`).forEach(b => b.classList.remove('selected'));
+            e.target.classList.add('selected');
+
+            testAnswers[qIndex] = optIndex;
+        });
+    });
+
+    submitBtn.onclick = showLevelTestResult;
+}
+
+function showLevelTestResult() {
+    let correctCount = 0;
+    let levelScores = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0, C2: 0 };
+
+    levelTestQuestions.forEach((q, index) => {
+        if (testAnswers[index] === q.correct) {
+            correctCount++;
+            levelScores[q.level]++;
+        }
+    });
+
+    // Calculate level and vocabulary
+    let resultLevel = 'A1';
+    let vocabulary = 0;
+
+    const accuracy = correctCount / levelTestQuestions.length;
+
+    if (accuracy >= 0.9) {
+        resultLevel = 'C1';
+        vocabulary = 8000;
+    } else if (accuracy >= 0.8) {
+        resultLevel = 'B2';
+        vocabulary = 5000;
+    } else if (accuracy >= 0.7) {
+        resultLevel = 'B1';
+        vocabulary = 3000;
+    } else if (accuracy >= 0.5) {
+        resultLevel = 'A2';
+        vocabulary = 1500;
+    } else {
+        resultLevel = 'A1';
+        vocabulary = 500;
+    }
+
+    const descriptions = {
+        'A1': '您处于法语初学阶段，可以理解和使用基本的日常用语和简单句子。建议从基础语法和常用词汇开始学习。',
+        'A2': '您已经掌握基础法语，可以进行简单的日常交流。建议继续巩固语法，扩展词汇量。',
+        'B1': '您已达到中级水平，可以应对大多数日常情境。建议加强听说能力，学习更复杂的语法结构。',
+        'B2': '您的法语水平较好，可以流利地表达观点。建议多阅读法语文章，提升书面表达能力。',
+        'C1': '您的法语水平优秀，接近母语水平。建议学习专业领域法语，提升文化素养。',
+        'C2': '恭喜！您已精通法语，可以自如地使用法语进行各类交流。'
+    };
+
+    // Show results
+    document.getElementById('testLevelResult').textContent = resultLevel;
+    document.getElementById('testVocabResult').textContent = vocabulary + '词';
+    document.getElementById('testDescription').textContent = descriptions[resultLevel];
+
+    document.getElementById('skipTestSubmit').style.display = 'none';
+    document.getElementById('testResultSection').style.display = 'block';
+
+    // Update user's level
+    state.currentLevel = resultLevel;
+    document.getElementById('currentLevelBadge').textContent = resultLevel;
+    saveState();
 }
 
 // Study Reminder

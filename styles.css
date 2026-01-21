@@ -761,6 +761,63 @@ body {
     color: var(--text-secondary);
 }
 
+/* Test Result Section */
+.test-result-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border-color);
+}
+
+.test-result-section h3 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.test-result-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.test-result-card {
+    background: linear-gradient(135deg, #E6E6FA 0%, #D8C8FF 100%);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.test-result-card .result-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.test-result-card .result-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.test-result-card .result-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.test-description {
+    background: rgba(121, 76, 255, 0.05);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
 /* Bottom Navigation */
 .bottom-nav {
     position: fixed;
