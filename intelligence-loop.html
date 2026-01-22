@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>固态电池情报生产闭环 - 角色升级</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .legend-icon.human {
+            background: #fed7d7;
+        }
+        .legend-icon.agent {
+            background: #c6f6d5;
+        }
+        .legend-icon.hybrid {
+            background: #feebc8;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+        }
+        .process-box {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .process-box:hover {
+            filter: brightness(1.1);
+        }
+        .info-panel {
+            margin-top: 40px;
+            padding: 30px;
+            background: #edf2f7;
+            border-radius: 12px;
+        }
+        .info-panel h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .role-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .role-card h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        .role-card .before {
+            color: #e53e3e;
+            margin-bottom: 8px;
+        }
+        .role-card .after {
+            color: #38a169;
+        }
+        .arrow {
+            color: #4299e1;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔋 固态电池情报生产与应用闭环</h1>
+        <p class="subtitle">从人工运营到智能Agent的角色升级</p>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-icon human">👤</div>
+                <span>人工主导</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon agent">🤖</div>
+                <span>Agent自动化</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon hybrid">🤝</div>
+                <span>AI辅助决策</span>
+            </div>
+        </div>
+
+        <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+            <!-- 定义渐变和阴影 -->
+            <defs>
+                <linearGradient id="humanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#fc8181;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#f56565;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="agentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#68d391;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#48bb78;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="hybridGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f6ad55;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ed8936;stop-opacity:1" />
+                </linearGradient>
+                <filter id="shadow">
+                    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.2"/>
+                </filter>
+            </defs>
+
+            <!-- 中心圆环 -->
+            <circle cx="600" cy="400" r="80" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-dasharray="5,5"/>
+            <text x="600" y="395" text-anchor="middle" font-size="16" fill="#2d3748" font-weight="bold">情报闭环</text>
+            <text x="600" y="415" text-anchor="middle" font-size="14" fill="#718096">固态电池</text>
+
+            <!-- 1. 持续发现 (左上) -->
+            <g class="process-box" filter="url(#shadow)">
+                <rect x="50" y="50" width="200" height="140" rx="12" fill="url(#agentGrad)"/>
+                <text x="150" y="85" text-anchor="middle" font-size="20" fill="white" font-weight="bold">1️⃣ 持续发现</text>
+
+                <rect x="60" y="100" width="180" height="30" rx="6" fill="rgba(255,255,255,0.3)"/>
+                <text x="70" y="120" font-size="14" fill="white">👤 人工</text>
+                <text x="220" y="120" text-anchor="end" font-size="12" fill="white">手动订阅</text>
+
+                <text x="150" y="145" text-anchor="middle" font-size="16" fill="white">↓</text>
+
+                <rect x="60" y="150" width="180" height="30" rx="6" fill="rgba(255,255,255,0.9)"/>
+                <text x="70" y="170" font-size="14" fill="#2d3748">🤖 Agent</text>
+                <text x="220" y="170" text-anchor="end" font-size="12" fill="#2d3748">自动抓取</text>
+            </g>
+            <text x="150" y="210" text-anchor="middle" font-size="12" fill="#4a5568">信息源管理、关键词监控</text>
+
+            <!-- 2. 评估分级 (右上) -->
+            <g class="process-box" filter="url(#shadow)">
+                <rect x="950" y="50" width="200" height="140" rx="12" fill="url(#hybridGrad)"/>
+                <text x="1050" y="85" text-anchor="middle" font-size="20" fill="white" font-weight="bold">2️⃣ 评估分级</text>
+
+                <rect x="960" y="100" width="180" height="30" rx="6" fill="rgba(255,255,255,0.3)"/>
+                <text x="970" y="120" font-size="14" fill="white">👤 专家</text>
+                <text x="1130" y="120" text-anchor="end" font-size="12" fill="white">手动判断</text>
+
+                <text x="1050" y="145" text-anchor="middle" font-size="16" fill="white">↓</text>
+
+                <rect x="960" y="150" width="180" height="30" rx="6" fill="rgba(255,255,255,0.9)"/>
+                <text x="970" y="170" font-size="14" fill="#2d3748">🤝 AI辅助</text>
+                <text x="1130" y="170" text-anchor="end" font-size="12" fill="#2d3748">智能评分</text>
+            </g>
+            <text x="1050" y="210" text-anchor="middle" font-size="12" fill="#4a5568">技术判断、价值评估</text>
+
+            <!-- 3. 知识沉淀 (右下) -->
+            <g class="process-box" filter="url(#shadow)">
+                <rect x="950" y="610" width="200" height="140" rx="12" fill="url(#agentGrad)"/>
+                <text x="1050" y="645" text-anchor="middle" font-size="20" fill="white" font-weight="bold">3️⃣ 知识沉淀</text>
+
+                <rect x="960" y="660" width="180" height="30" rx="6" fill="rgba(255,255,255,0.3)"/>
+                <text x="970" y="680" font-size="14" fill="white">👤 人工</text>
+                <text x="1130" y="680" text-anchor="end" font-size="12" fill="white">Excel整理</text>
+
+                <text x="1050" y="705" text-anchor="middle" font-size="16" fill="white">↓</text>
+
+                <rect x="960" y="710" width="180" height="30" rx="6" fill="rgba(255,255,255,0.9)"/>
+                <text x="970" y="730" font-size="14" fill="#2d3748">🤖 自动</text>
+                <text x="1130" y="730" text-anchor="end" font-size="12" fill="#2d3748">知识图谱</text>
+            </g>
+            <text x="1050" y="770" text-anchor="middle" font-size="12" fill="#4a5568">结构化存储、标签体系</text>
+
+            <!-- 4. 智能分发 (左下) -->
+            <g class="process-box" filter="url(#shadow)">
+                <rect x="50" y="610" width="200" height="140" rx="12" fill="url(#agentGrad)"/>
+                <text x="150" y="645" text-anchor="middle" font-size="20" fill="white" font-weight="bold">4️⃣ 智能分发</text>
+
+                <rect x="60" y="660" width="180" height="30" rx="6" fill="rgba(255,255,255,0.3)"/>
+                <text x="70" y="680" font-size="14" fill="white">👤 人工</text>
+                <text x="230" y="680" text-anchor="end" font-size="12" fill="white">邮件群发</text>
+
+                <text x="150" y="705" text-anchor="middle" font-size="16" fill="white">↓</text>
+
+                <rect x="60" y="710" width="180" height="30" rx="6" fill="rgba(255,255,255,0.9)"/>
+                <text x="70" y="730" font-size="14" fill="#2d3748">🤖 智能</text>
+                <text x="230" y="730" text-anchor="end" font-size="12" fill="#2d3748">精准推送</text>
+            </g>
+            <text x="150" y="770" text-anchor="middle" font-size="12" fill="#4a5568">按需订阅、角色匹配</text>
+
+            <!-- 5. 业务应用 (中左) -->
+            <g class="process-box" filter="url(#shadow)">
+                <rect x="330" y="250" width="180" height="120" rx="12" fill="url(#humanGrad)"/>
+                <text x="420" y="285" text-anchor="middle" font-size="18" fill="white" font-weight="bold">5️⃣ 业务应用</text>
+                <text x="420" y="310" text-anchor="middle" font-size="14" fill="white">👤 决策者</text>
+                <text x="420" y="330" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.8)">技术判断</text>
+                <text x="420" y="350" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.8)">项目决策</text>
+            </g>
+
+            <!-- 6. 反馈优化 (中右) -->
+            <g class="process-box" filter="url(#shadow)">
+                <rect x="690" y="250" width="180" height="120" rx="12" fill="url(#hybridGrad)"/>
+                <text x="780" y="285" text-anchor="middle" font-size="18" fill="white" font-weight="bold">6️⃣ 反馈优化</text>
+                <text x="780" y="310" text-anchor="middle" font-size="14" fill="white">🤝 人机协同</text>
+                <text x="780" y="330" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.8)">效果评估</text>
+                <text x="780" y="350" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.8)">策略调优</text>
+            </g>
+
+            <!-- 连接箭头 -->
+            <!-- 1 -> 2 -->
+            <path d="M 250 120 Q 600 80 950 120" fill="none" stroke="#4299e1" stroke-width="3" marker-end="url(#arrowblue)"/>
+
+            <!-- 2 -> 3 -->
+            <path d="M 1050 190 L 1050 610" fill="none" stroke="#4299e1" stroke-width="3" marker-end="url(#arrowblue)"/>
+
+            <!-- 3 -> 4 -->
+            <path d="M 950 680 Q 600 720 250 680" fill="none" stroke="#4299e1" stroke-width="3" marker-end="url(#arrowblue)"/>
+
+            <!-- 4 -> 5 -->
+            <path d="M 250 680 Q 330 500 330 370" fill="none" stroke="#4299e1" stroke-width="3" marker-end="url(#arrowblue)"/>
+
+            <!-- 5 -> 6 -->
+            <path d="M 510 310 L 690 310" fill="none" stroke="#4299e1" stroke-width="3" marker-end="url(#arrowblue)"/>
+
+            <!-- 6 -> 1 -->
+            <path d="M 780 250 Q 420 150 250 120" fill="none" stroke="#4299e1" stroke-width="3" marker-end="url(#arrowblue)"/>
+
+            <!-- 箭头定义 -->
+            <defs>
+                <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#4299e1" />
+                </marker>
+            </defs>
+        </svg>
+
+        <div class="info-panel">
+            <h3>🎯 核心角色转变</h3>
+            <div class="role-grid">
+                <div class="role-card">
+                    <h4>持续发现</h4>
+                    <div class="before">👤 Before: 手动订阅公众号、期刊，定期浏览</div>
+                    <div class="arrow">↓ 升级为</div>
+                    <div class="after">🤖 After: Agent自动监控信息源、关键词抓取、7x24实时更新</div>
+                </div>
+
+                <div class="role-card">
+                    <h4>评估分级</h4>
+                    <div class="before">👤 Before: 专家逐条阅读、手动标注价值</div>
+                    <div class="arrow">↓ 升级为</div>
+                    <div class="after">🤝 After: AI预评分+专家复审，提升80%效率</div>
+                </div>
+
+                <div class="role-card">
+                    <h4>知识沉淀</h4>
+                    <div class="before">👤 Before: Excel表格、个人笔记、分散存储</div>
+                    <div class="arrow">↓ 升级为</div>
+                    <div class="after">🤖 After: 知识图谱自动构建、标签体系、全文检索</div>
+                </div>
+
+                <div class="role-card">
+                    <h4>智能分发</h4>
+                    <div class="before">👤 Before: 邮件群发、微信转发、手动提醒</div>
+                    <div class="arrow">↓ 升级为</div>
+                    <div class="after">🤖 After: 按角色精准推送、订阅管理、多渠道触达</div>
+                </div>
+
+                <div class="role-card">
+                    <h4>业务应用</h4>
+                    <div class="before">👤 核心: 技术负责人、项目经理决策</div>
+                    <div class="arrow">→ 保持</div>
+                    <div class="after">👤 人工主导，但获得更高质量情报支持</div>
+                </div>
+
+                <div class="role-card">
+                    <h4>反馈优化</h4>
+                    <div class="before">👤 Before: 月度会议讨论、手动调整</div>
+                    <div class="arrow">↓ 升级为</div>
+                    <div class="after">🤝 After: 数据看板实时监控+人工策略优化</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel" style="margin-top: 20px;">
+            <h3>📋 核心原则</h3>
+            <ul style="line-height: 2; color: #4a5568; margin-left: 20px;">
+                <li><strong>可替换性：</strong>任何角色可轮换，流程不依赖"某个人"</li>
+                <li><strong>资产沉淀：</strong>知识存在系统中，而非个人电脑</li>
+                <li><strong>标准统一：</strong>输出模板、评估标准、分级规则全团队一致</li>
+                <li><strong>持续优化：</strong>月度复盘，根据反馈调整主题和信息源</li>
+                <li><strong>边界清晰：</strong>情报提供证据与建议，不替代业务决策</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

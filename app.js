@@ -228,7 +228,8 @@ const learningData = {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize device ID
     state.deviceId = getDeviceId();
-    document.getElementById('deviceId').textContent = state.deviceId.substr(0, 16) + '...';
+    const shortDeviceId = state.deviceId.substring(0, 24) + '...';
+    document.getElementById('deviceId').textContent = shortDeviceId;
 
     loadState();
     initializeApp();
@@ -237,6 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load nickname if exists
     if (state.userNickname) {
         document.getElementById('userNickname').value = state.userNickname;
+    }
+
+    // Update profile level badge
+    if (state.currentLevel) {
+        document.getElementById('profileLevelBadge').textContent = state.currentLevel;
     }
 
     // Show welcome screen if first time
@@ -351,6 +357,37 @@ function initializeApp() {
 
     // Save nickname button
     document.getElementById('saveNicknameBtn')?.addEventListener('click', saveNickname);
+
+    // Copy device ID button
+    document.getElementById('copyDeviceId')?.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(state.deviceId);
+            const btn = document.getElementById('copyDeviceId');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span>✅</span>';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 2000);
+        } catch (err) {
+            // Fallback for browsers that don't support clipboard API
+            const textArea = document.createElement('textarea');
+            textArea.value = state.deviceId;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const btn = document.getElementById('copyDeviceId');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span>✅</span>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            } catch (err2) {
+                alert('复制失败，请手动复制设备ID');
+            }
+            document.body.removeChild(textArea);
+        }
+    });
 
     // Calendar navigation buttons
     document.getElementById('prevMonth')?.addEventListener('click', () => {

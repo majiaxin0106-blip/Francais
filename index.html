@@ -166,19 +166,58 @@
                     <button class="back-btn">← 返回</button>
                     <h2>👤 我的</h2>
 
-                    <!-- Account Info -->
-                    <div class="account-card">
-                        <h3>账号信息</h3>
-                        <div class="account-info-grid">
-                            <div class="info-item">
-                                <div class="info-label">设备ID</div>
-                                <div class="info-value" id="deviceId">加载中...</div>
+                    <!-- Account Info Card -->
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <span class="avatar-icon">🇫🇷</span>
                             </div>
-                            <div class="info-item">
-                                <div class="info-label">昵称</div>
-                                <div class="info-value-edit">
-                                    <input type="text" id="userNickname" placeholder="点击设置昵称">
-                                    <button class="icon-btn" id="saveNicknameBtn" title="保存昵称">✓</button>
+                            <div class="profile-title">
+                                <h3>Bonjour!</h3>
+                                <p>欢迎来到法语学习</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-info">
+                            <!-- Nickname Section -->
+                            <div class="info-row">
+                                <div class="info-icon">👤</div>
+                                <div class="info-content">
+                                    <div class="info-label">我的昵称</div>
+                                    <div class="nickname-edit">
+                                        <input type="text" id="userNickname" placeholder="设置你的学习昵称">
+                                        <button class="save-btn" id="saveNicknameBtn">
+                                            <span class="btn-icon">✓</span>
+                                            <span class="btn-text">保存</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Device ID Section -->
+                            <div class="info-row">
+                                <div class="info-icon">📱</div>
+                                <div class="info-content">
+                                    <div class="info-label">设备标识</div>
+                                    <div class="device-id-display">
+                                        <code id="deviceId">加载中...</code>
+                                        <button class="copy-btn" id="copyDeviceId" title="复制设备ID">
+                                            <span>📋</span>
+                                        </button>
+                                    </div>
+                                    <p class="info-hint">数据已自动绑定此设备</p>
+                                </div>
+                            </div>
+
+                            <!-- Level Badge -->
+                            <div class="info-row">
+                                <div class="info-icon">🏆</div>
+                                <div class="info-content">
+                                    <div class="info-label">当前等级</div>
+                                    <div class="level-display">
+                                        <span class="level-badge-large" id="profileLevelBadge">A1</span>
+                                        <span class="level-desc">初学者</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -186,7 +225,7 @@
 
                     <!-- Learning Stats -->
                     <div class="stats-section">
-                        <h3>学习统计</h3>
+                        <h3>📊 学习统计</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-icon">🔥</div>
@@ -213,7 +252,7 @@
 
                     <!-- Streak Calendar -->
                     <div class="streak-calendar" id="streakCalendar">
-                        <h3>学习日历</h3>
+                        <h3>📅 学习日历</h3>
                         <div class="calendar-header">
                             <button class="calendar-nav-btn" id="prevMonth">◀</button>
                             <div class="calendar-title" id="calendarTitle">2024年1月</div>
@@ -235,8 +274,10 @@
                     <div class="reminder-card">
                         <h3>⏰ 学习提醒</h3>
                         <p>设置每日学习提醒时间</p>
-                        <input type="time" id="reminderTime" value="20:00">
-                        <button class="submit-btn" id="setReminderBtn">设置提醒</button>
+                        <div class="reminder-input-group">
+                            <input type="time" id="reminderTime" value="20:00">
+                            <button class="submit-btn" id="setReminderBtn">设置提醒</button>
+                        </div>
                     </div>
                 </div>
             </div>
