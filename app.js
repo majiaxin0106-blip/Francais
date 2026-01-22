@@ -16,8 +16,21 @@ const state = {
     unitProgress: {}, // Track completion of units and lessons
     grammarProgress: 0,
     currentQuestionIndex: 0,
-    calendarViewDate: new Date() // 新增：日历当前查看的年月
+    calendarViewDate: new Date(), // 新增：日历当前查看的年月
+    deviceId: null, // 设备ID
+    userNickname: null, // 用户昵称
+    lastSaveTime: null // 最后保存时间
 };
+
+// Generate or retrieve device ID
+function getDeviceId() {
+    let deviceId = localStorage.getItem('francais_device_id');
+    if (!deviceId) {
+        deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('francais_device_id', deviceId);
+    }
+    return deviceId;
+}
 
 // Course System Data
 const courseData = {
@@ -213,9 +226,18 @@ const learningData = {
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize device ID
+    state.deviceId = getDeviceId();
+    document.getElementById('deviceId').textContent = state.deviceId.substr(0, 16) + '...';
+
     loadState();
     initializeApp();
     updateStreakDisplay();
+
+    // Load nickname if exists
+    if (state.userNickname) {
+        document.getElementById('userNickname').value = state.userNickname;
+    }
 
     // Show welcome screen if first time
     if (!state.currentLevel) {
@@ -224,6 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
         switchScreen('course');
         renderCourseSystem();
     }
+
+    // Auto-save every 30 seconds
+    setInterval(() => {
+        saveState();
+        console.log('Auto-saved at', new Date().toLocaleTimeString());
+    }, 30000);
 });
 
 function initializeApp() {
@@ -320,6 +348,14 @@ function initializeApp() {
 
     // Reminder set button
     document.getElementById('setReminderBtn')?.addEventListener('click', setStudyReminder);
+
+    // Data management buttons
+    document.getElementById('saveNicknameBtn')?.addEventListener('click', saveNickname);
+    document.getElementById('exportDataBtn')?.addEventListener('click', exportData);
+    document.getElementById('importDataBtn')?.addEventListener('click', () => {
+        document.getElementById('importFileInput').click();
+    });
+    document.getElementById('importFileInput')?.addEventListener('change', importData);
 
     // Calendar navigation buttons
     document.getElementById('prevMonth')?.addEventListener('click', () => {
@@ -1152,19 +1188,159 @@ function loadState() {
     const saved = localStorage.getItem('francaisAppState');
     if (saved) {
         try {
-            Object.assign(state, JSON.parse(saved));
+            const loadedState = JSON.parse(saved);
+            // Merge loaded state, preserving calendarViewDate as Date object
+            Object.assign(state, loadedState);
+            if (loadedState.calendarViewDate) {
+                state.calendarViewDate = new Date(loadedState.calendarViewDate);
+            }
+            console.log('✅ 数据加载成功', new Date().toLocaleTimeString());
         } catch (e) {
-            console.error('Failed to load state:', e);
+            console.error('❌ 数据加载失败:', e);
+            alert('数据加载失败，请尝试导入备份数据');
         }
     }
 }
 
 function saveState() {
     try {
+        state.lastSaveTime = new Date().toISOString();
         localStorage.setItem('francaisAppState', JSON.stringify(state));
+
+        // Also save to a backup key with timestamp (keep last 3)
+        const backupKey = 'francaisAppState_backup_' + Date.now();
+        localStorage.setItem(backupKey, JSON.stringify(state));
+
+        // Clean old backups
+        cleanOldBackups();
     } catch (e) {
-        console.error('Failed to save state:', e);
+        console.error('❌ 数据保存失败:', e);
+        alert('数据保存失败！请导出数据以防丢失。');
     }
+}
+
+function cleanOldBackups() {
+    try {
+        const backupKeys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('francaisAppState_backup_')) {
+                backupKeys.push(key);
+            }
+        }
+
+        // Sort by timestamp (newest first)
+        backupKeys.sort().reverse();
+
+        // Keep only the 3 most recent backups
+        for (let i = 3; i < backupKeys.length; i++) {
+            localStorage.removeItem(backupKeys[i]);
+        }
+    } catch (e) {
+        console.error('清理备份失败:', e);
+    }
+}
+
+// Data Management Functions
+function saveNickname() {
+    const nickname = document.getElementById('userNickname').value.trim();
+    if (nickname) {
+        state.userNickname = nickname;
+        saveState();
+        alert('✅ 昵称保存成功：' + nickname);
+    } else {
+        alert('⚠️ 请输入昵称');
+    }
+}
+
+function exportData() {
+    try {
+        const exportData = {
+            version: '1.0',
+            exportTime: new Date().toISOString(),
+            deviceId: state.deviceId,
+            userNickname: state.userNickname,
+            data: state
+        };
+
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        const filename = `francais_backup_${state.userNickname || 'user'}_${new Date().toISOString().split('T')[0]}.json`;
+        link.download = filename;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        alert('✅ 数据导出成功！\n文件名：' + filename);
+    } catch (e) {
+        console.error('导出失败:', e);
+        alert('❌ 数据导出失败：' + e.message);
+    }
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+
+            // Validate data structure
+            if (!importedData.data || !importedData.version) {
+                throw new Error('无效的数据格式');
+            }
+
+            // Confirm before import
+            const confirmed = confirm(
+                `📥 确认导入数据？\n\n` +
+                `来源设备：${importedData.deviceId || '未知'}\n` +
+                `昵称：${importedData.userNickname || '未设置'}\n` +
+                `导出时间：${new Date(importedData.exportTime).toLocaleString()}\n\n` +
+                `⚠️ 当前数据将被覆盖！`
+            );
+
+            if (confirmed) {
+                // Restore state
+                Object.assign(state, importedData.data);
+
+                // Keep current device ID
+                state.deviceId = getDeviceId();
+
+                // Restore date object
+                if (importedData.data.calendarViewDate) {
+                    state.calendarViewDate = new Date(importedData.data.calendarViewDate);
+                }
+
+                saveState();
+
+                // Update UI
+                if (state.userNickname) {
+                    document.getElementById('userNickname').value = state.userNickname;
+                }
+                updateStreakDisplay();
+
+                alert('✅ 数据导入成功！页面将刷新。');
+                setTimeout(() => location.reload(), 1000);
+            }
+        } catch (e) {
+            console.error('导入失败:', e);
+            alert('❌ 数据导入失败：' + e.message);
+        }
+    };
+
+    reader.readAsText(file);
+
+    // Reset file input
+    event.target.value = '';
 }
 
 // Register Service Worker for PWA
