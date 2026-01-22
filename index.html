@@ -160,11 +160,56 @@
                 </div>
             </div>
 
-            <!-- Progress Screen -->
+            <!-- My Profile Screen -->
             <div id="progressScreen" class="screen">
                 <div class="practice-card">
                     <button class="back-btn">← 返回</button>
-                    <h2>学习进度</h2>
+                    <h2>👤 我的</h2>
+
+                    <!-- Account Info -->
+                    <div class="account-card">
+                        <h3>账号信息</h3>
+                        <div class="account-info-grid">
+                            <div class="info-item">
+                                <div class="info-label">设备ID</div>
+                                <div class="info-value" id="deviceId">加载中...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">昵称</div>
+                                <div class="info-value-edit">
+                                    <input type="text" id="userNickname" placeholder="点击设置昵称">
+                                    <button class="icon-btn" id="saveNicknameBtn" title="保存昵称">✓</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning Stats -->
+                    <div class="stats-section">
+                        <h3>学习统计</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">🔥</div>
+                                <div class="stat-number" id="totalStreak">0</div>
+                                <div class="stat-label">连续天数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📚</div>
+                                <div class="stat-number" id="totalSessions">0</div>
+                                <div class="stat-label">学习次数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">✅</div>
+                                <div class="stat-number" id="correctAnswers">0</div>
+                                <div class="stat-label">正确答案</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-number" id="accuracy">0%</div>
+                                <div class="stat-label">正确率</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Streak Calendar -->
                     <div class="streak-calendar" id="streakCalendar">
@@ -186,64 +231,12 @@
                         <div class="calendar-grid" id="calendarGrid"></div>
                     </div>
 
-                    <!-- Stats -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon">🔥</div>
-                            <div class="stat-number" id="totalStreak">0</div>
-                            <div class="stat-label">连续天数</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📚</div>
-                            <div class="stat-number" id="totalSessions">0</div>
-                            <div class="stat-label">学习次数</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">✅</div>
-                            <div class="stat-number" id="correctAnswers">0</div>
-                            <div class="stat-label">正确答案</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-number" id="accuracy">0%</div>
-                            <div class="stat-label">正确率</div>
-                        </div>
-                    </div>
-
                     <!-- Study Reminder -->
                     <div class="reminder-card">
                         <h3>⏰ 学习提醒</h3>
                         <p>设置每日学习提醒时间</p>
                         <input type="time" id="reminderTime" value="20:00">
                         <button class="submit-btn" id="setReminderBtn">设置提醒</button>
-                    </div>
-
-                    <!-- Data Management -->
-                    <div class="reminder-card" style="margin-top: 20px;">
-                        <h3>💾 数据管理</h3>
-                        <p style="font-size: 12px; color: #718096; margin-bottom: 16px;">
-                            设备ID: <span id="deviceId" style="font-family: monospace; color: #667eea;">加载中...</span>
-                        </p>
-
-                        <!-- Account Section -->
-                        <div id="accountSection">
-                            <div style="margin-bottom: 16px;">
-                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748;">👤 账号昵称（可选）</label>
-                                <input type="text" id="userNickname" placeholder="输入昵称，如：小明" style="width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 14px; margin-bottom: 8px;">
-                                <button class="submit-btn" id="saveNicknameBtn" style="width: 100%; padding: 12px;">保存昵称</button>
-                            </div>
-                        </div>
-
-                        <!-- Data Actions -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
-                            <button class="submit-btn" id="exportDataBtn" style="background: #48bb78; box-shadow: 0 4px 0 #38a169;">📤 导出数据</button>
-                            <button class="submit-btn" id="importDataBtn" style="background: #4299e1; box-shadow: 0 4px 0 #3182ce;">📥 导入数据</button>
-                        </div>
-                        <input type="file" id="importFileInput" accept=".json" style="display: none;">
-
-                        <div style="margin-top: 12px; padding: 12px; background: #fef5e7; border-radius: 8px; font-size: 12px; color: #718096;">
-                            💡 提示：定期导出数据以防数据丢失
-                        </div>
                     </div>
                 </div>
             </div>
@@ -288,8 +281,8 @@
                 <span>错题</span>
             </button>
             <button class="nav-btn" data-screen="progress">
-                <span>📊</span>
-                <span>进度</span>
+                <span>👤</span>
+                <span>我的</span>
             </button>
         </nav>
 

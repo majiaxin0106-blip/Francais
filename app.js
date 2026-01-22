@@ -349,13 +349,8 @@ function initializeApp() {
     // Reminder set button
     document.getElementById('setReminderBtn')?.addEventListener('click', setStudyReminder);
 
-    // Data management buttons
+    // Save nickname button
     document.getElementById('saveNicknameBtn')?.addEventListener('click', saveNickname);
-    document.getElementById('exportDataBtn')?.addEventListener('click', exportData);
-    document.getElementById('importDataBtn')?.addEventListener('click', () => {
-        document.getElementById('importFileInput').click();
-    });
-    document.getElementById('importFileInput')?.addEventListener('change', importData);
 
     // Calendar navigation buttons
     document.getElementById('prevMonth')?.addEventListener('click', () => {
@@ -1251,96 +1246,6 @@ function saveNickname() {
     } else {
         alert('⚠️ 请输入昵称');
     }
-}
-
-function exportData() {
-    try {
-        const exportData = {
-            version: '1.0',
-            exportTime: new Date().toISOString(),
-            deviceId: state.deviceId,
-            userNickname: state.userNickname,
-            data: state
-        };
-
-        const dataStr = JSON.stringify(exportData, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-
-        const url = URL.createObjectURL(dataBlob);
-        const link = document.createElement('a');
-        link.href = url;
-
-        const filename = `francais_backup_${state.userNickname || 'user'}_${new Date().toISOString().split('T')[0]}.json`;
-        link.download = filename;
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-
-        alert('✅ 数据导出成功！\n文件名：' + filename);
-    } catch (e) {
-        console.error('导出失败:', e);
-        alert('❌ 数据导出失败：' + e.message);
-    }
-}
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-
-            // Validate data structure
-            if (!importedData.data || !importedData.version) {
-                throw new Error('无效的数据格式');
-            }
-
-            // Confirm before import
-            const confirmed = confirm(
-                `📥 确认导入数据？\n\n` +
-                `来源设备：${importedData.deviceId || '未知'}\n` +
-                `昵称：${importedData.userNickname || '未设置'}\n` +
-                `导出时间：${new Date(importedData.exportTime).toLocaleString()}\n\n` +
-                `⚠️ 当前数据将被覆盖！`
-            );
-
-            if (confirmed) {
-                // Restore state
-                Object.assign(state, importedData.data);
-
-                // Keep current device ID
-                state.deviceId = getDeviceId();
-
-                // Restore date object
-                if (importedData.data.calendarViewDate) {
-                    state.calendarViewDate = new Date(importedData.data.calendarViewDate);
-                }
-
-                saveState();
-
-                // Update UI
-                if (state.userNickname) {
-                    document.getElementById('userNickname').value = state.userNickname;
-                }
-                updateStreakDisplay();
-
-                alert('✅ 数据导入成功！页面将刷新。');
-                setTimeout(() => location.reload(), 1000);
-            }
-        } catch (e) {
-            console.error('导入失败:', e);
-            alert('❌ 数据导入失败：' + e.message);
-        }
-    };
-
-    reader.readAsText(file);
-
-    // Reset file input
-    event.target.value = '';
 }
 
 // Register Service Worker for PWA
